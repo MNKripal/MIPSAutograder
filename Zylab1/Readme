@@ -1,0 +1,70 @@
+# Question 1 – MIPS Autograder
+
+# Overview
+
+This folder contains the Gradescope autograder for Zylab1 1: ALU and Data Transfer Instructions of the MIPS programming assignments.
+
+The autograder executes both the instructor's reference solution and the student's submission using the SPIM simulator. The resulting memory contents are compared to determine correctness.
+
+#Grading Process
+
+For each hidden test case:
+
+1. Initialize the input array `A`.
+2. Execute the instructor's MIPS solution.
+3. Execute the student's MIPS solution.
+4. Compare the resulting memory values:
+   - `A[2]`
+   - `A[3]`
+   - `A[4]`
+   - `A[5]`
+   - `A[6]`
+5. Award 1 point if the student's output matches the instructor's output.
+
+The total score is 4 points.
+
+# Hidden Test Cases
+
+| Test Case | A[0] | A[1] |
+|-----------|-----:|-----:|
+| 1         | 4    | 5    |  
+| 2         | -8   | -4   |
+| 3         | -5   | 8    |
+| 4         | 5    | -8   |
+
+# Files
+
+| File | Description |
+|------|-------------|
+| `grader.py` | Main Gradescope autograder script |
+| `setup.sh` | Installs SPIM and required dependencies |
+| `run_autograder` | Launches the autograder inside Gradescope |
+| `MIPSSolution.asm` | Instructor's reference solution |
+
+
+#Student Submission Requirements
+
+Students should submit **only the MIPS instruction sequence**.
+
+Do not include:
+
+- `.data`
+- `.text`
+- `.globl main`
+- `main:`
+
+The autograder automatically generates the complete MIPS program before execution.
+
+Students should assume that:
+
+- `$s0` already contains the base address of the array.
+- The input array has already been initialized.
+
+---
+
+# Notes
+
+- The autograder uses SPIM to execute MIPS programs.
+- The instructor's solution is used as the grading reference.
+- The student's output is compared against the instructor's output for each hidden test case.
+- Each hidden test case is worth **1 point**.
