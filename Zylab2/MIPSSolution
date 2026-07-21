@@ -1,0 +1,28 @@
+Main:          addi $t1, $zero, 0	   # i = 0
+               addi $s2, $s1, -1
+first_loop:    bge $t1, $s1, Exit	   # if i >= size exit
+               sll $t3, $t1, 2	   	# i*4
+               add $t3, $s0, $t3	      # address of Array[i]
+               lw $t4, 0($t3)		      # value of Array[i]
+               addi $t2, $t1, 1		   # j = i + 1
+second_loop:   bge $t2, $s1, end_while	# if j >= size end second loop
+array_val:     sll $t3, $t2, 2		   # j*4
+               add $t3, $s0, $t3	      # address of Array[j]
+               lw $t5, 0($t3)		      # value of Array[j]
+compare:       beq $t4, $t5, for_start	# if Array[i] = Array[j] enter for loop
+               addi $t2, $t2, 1		   # j ++ if values unequal
+               j second_loop
+for_start:     addi $t8, $t2, 0		   # k = j
+for_loop:      bge $t8, $s2, end_for	# if k >= size end for loop               
+               sll $t9, $t8, 2		   # k*4
+               add $t9, $s0, $t9	      # address of Array[k]
+               lw $t7, 4($t9)		      # Value of Array[k+1]
+               sw $t7, 0($t9)		      # write to Array[k]
+               addi $t8, $t8,1		   # k ++
+               j for_loop
+end_for:       addi $s1, $s1, -1	      # size -- if duplicate found
+               addi $s2, $s1, -1
+               j second_loop 
+end_while:     addi $t1, $t1, 1		   # i ++
+               j first_loop
+Exit:
