@@ -1,0 +1,70 @@
+# Question 4 – MIPS Autograder
+
+# Overview
+
+This folder contains the Gradescope autograder for Zylab4: Singly Linked List Insertion of the MIPS programming assignments.
+
+The autograder executes both the instructor's reference solution and the student's submission using the SPIM simulator. The final registers and memory layouts are parsed and compared dynamically to determine correctness.
+
+# Grading Process
+
+For each hidden test case:
+
+1. Initialize registers `$s0`, `$s1`, `$s2`, `$s3` and linked-list memory layouts in SPIM using relative address mapping.
+2. Execute the instructor's reference MIPS solution.
+3. Execute the student's MIPS solution.
+4. Compare the resulting values:
+   - Registers `$s0`, `$s1`, `$s2`, `$s3`
+   - Memory layouts of the linked list nodes (represented as a dictionary of `address: value`)
+5. Award 1 point if the student's output matches the instructor's output.
+
+The total score is 4 points.
+
+# Hidden Test Cases
+
+### Test Case 1
+- **Initial Registers**: `$s0 = 4000` (head), `$s1 = 8000` (newNode), `$s2 = 2` (n), `$s3 = 0`
+- **Memory Nodes**: `4000 -> 3848 -> 6104 -> 5008 -> 4500 -> NULL`, `newNode = 8000`
+
+### Test Case 2
+- **Initial Registers**: `$s0 = 13804` (head), `$s1 = 4000` (newNode), `$s2 = 0` (n), `$s3 = 0`
+- **Memory Nodes**: `13804 -> 8000 -> NULL`, `newNode = 4000`
+
+### Test Case 3
+- **Initial Registers**: `$s0 = 8016` (head), `$s1 = 13000` (newNode), `$s2 = 100` (n), `$s3 = 0`
+- **Memory Nodes**: `8016 -> 8040 -> 4024 -> 6032 -> NULL`, `newNode = 13000`
+
+### Test Case 4
+- **Initial Registers**: `$s0 = 10000` (head), `$s1 = 4024` (newNode), `$s2 = 3` (n), `$s3 = 0`
+- **Memory Nodes**: `10000 -> 5008 -> 8016 -> NULL`, `newNode = 4024`
+
+# Files
+
+| File | Description |
+|------|-------------|
+| `grader.py` | Main Gradescope autograder script |
+| `setup.sh` | Installs SPIM and required dependencies |
+| `run_autograder` | Launches the autograder inside Gradescope |
+| `MIPSSolution` | Instructor's reference solution |
+
+# Student Submission Requirements
+
+Students should submit **only the MIPS instruction sequence**.
+
+Do not include:
+
+- `.data`
+- `.text`
+- `.globl main`
+- `main:`
+
+The autograder automatically generates the complete MIPS program before execution.
+
+---
+
+# Notes
+
+- The autograder uses SPIM to execute MIPS programs.
+- The instructor's solution is used as the grading reference.
+- The student's output is compared against the instructor's output for each hidden test case.
+- Each hidden test case is worth **1 point**.

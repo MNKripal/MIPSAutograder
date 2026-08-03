@@ -1,0 +1,34 @@
+Main:    addi $a0, $s0, 0        # arg1 = head = $s0
+         addi $a1, $s2, 0        # arg2 = n = $s2
+         addi $a2, $s1, 0        # arg3 = node = $s1
+         jal Insert              # Call Insert function
+Ret:     addi $s3, $v0, 0        # $s3 = output of insert function
+         j Exit
+
+Insert:  bne $a1, $zero, C_find  # n != 0 call find
+         sw $a0, 4($a2)          # node->next = head
+         addi $s0, $a2, 0        # head = node
+         j R_insert              # return
+C_find:  addi $sp, $sp, -4       # create space for 1 variable
+         sw $ra, 0($sp)          # store $ra = R_insert to stack
+         # args for find same as 1st 2 args of insert
+         jal Find                # addr1 = $v0, addr2 = $v1
+         sw $a2, 4($v0)          # addr1->next = node
+         sw $v1, 4($a2)          # node->next = addr2
+         lw $ra, 0($sp)          # retrieve $ra = R_insert 
+         addi $sp, $sp, 4        # update stack pointer to original
+R_insert:lw $v0, 0($a2)          # node->value
+         jr $ra
+         
+Find:    addi $v0, $a0, 0        # curr = head
+         addi $t0, $zero, 1      # i = 1
+Loop:    bge $t0, $a1, R_find    # i >= n return
+         lw $v0, 4($v0)          # curr = curr->next
+         lw $t1, 4($v0)          # curr->next
+         beq $t1, $zero, R_find  # break if NULL (last node)
+         addi $t0, $t0, 1        # i++
+         j Loop
+R_find:  lw $v1, 4($v0)          # 2nd return value = curr->next 
+         jr $ra
+         
+Exit:
