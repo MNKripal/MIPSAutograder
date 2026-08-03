@@ -1,0 +1,60 @@
+# Question 5 – MIPS Autograder
+
+# Overview
+
+This folder contains the Gradescope autograder for Zylab5: Recursive Functions and Stack Manipulation of the MIPS programming assignments.
+
+The autograder executes both the instructor's reference solution and the student's submission using the SPIM simulator. The final values of the registers `$s0`, `$s1`, and `$s2` are parsed and compared dynamically to determine correctness.
+
+# Grading Process
+
+For each hidden test case:
+
+1. Initialize registers `$s0`, `$s1`, `$s2` in SPIM.
+2. Execute the instructor's reference MIPS solution.
+3. Execute the student's MIPS solution.
+4. Compare the resulting values:
+   - Registers `$s0`, `$s1`, `$s2`
+5. Award 1 point if the student's output matches the instructor's output.
+
+The total score is 4 points.
+
+# Hidden Test Cases
+
+| Test Case | $s0 (a) | $s1 (b) | Expected Final $s2 (result) |
+|-----------|---------|---------|-----------------------------|
+| 1         | 1       | 2       | -7                          |
+| 2         | 4       | 2       | 128                         |
+| 3         | 230     | 230     | 0                           |
+| 4         | 4       | 0       | 448                         |
+
+# Files
+
+| File | Description |
+|------|-------------|
+| `grader.py` | Main Gradescope autograder script |
+| `setup.sh` | Installs SPIM and required dependencies |
+| `run_autograder` | Launches the autograder inside Gradescope |
+| `MIPSSolution` | Instructor's reference solution |
+
+# Student Submission Requirements
+
+Students should submit **only the MIPS instruction sequence**.
+
+Do not include:
+
+- `.data`
+- `.text`
+- `.globl main`
+- `main:`
+
+The autograder automatically generates the complete MIPS program before execution.
+
+---
+
+# Notes
+
+- The autograder uses SPIM to execute MIPS programs.
+- The instructor's solution is used as the grading reference.
+- The student's output is compared against the instructor's output for each hidden test case.
+- Each hidden test case is worth **1 point**.

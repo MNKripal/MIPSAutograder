@@ -1,0 +1,54 @@
+
+Main:    add $t0, $s0, $s1    # a + b
+         bge $t0, $zero, Sub     # If $t0 > 0, skip to Sub
+         sub $t0, $zero, $t0     # Negate if Sum negative
+Sub:     sub $t1, $s0, $s1    # a - b
+         bge $t1, $zero, Args    # If $t1 > 0, skip to Args
+         sub $t1, $zero, $t1     # Negate if Diff negative
+Args:    addi $a0, $t0, 0     # |a+b|
+         addi $a1, $t1, 0     # |a-b|
+         jal Recursion
+         mult $v0, $s0         # a * $v0
+         mflo $t2
+Second:  addi $a0, $t1, 0     # |b-a|
+         addi $a1, $t0, 0     # |b+a|
+         jal Recursion
+         mult $v0, $s1         # b * $v0
+         mflo $t3
+Result:  sub $s2, $t2, $t3    # Final Result in Main
+         j Exit
+         
+Recursion:  bgt $a0, $zero, XPos       # x > 0?
+            bgt $a1, $zero, YPos       # x <= 0 , y > 0?
+BothLess:   addi $v0, $zero, 0         # x <= 0 , y <= 0
+            jr $ra
+            
+YPos:       addi $v0, $a1, 0        # x <= 0 , y > 0
+            jr $ra
+            
+XPos:       bgt $a1, $zero, BothPos    # x > 0 , y > 0?
+            addi $v0, $a0, 0        # x > 0 , y <= 0
+            jr $ra
+
+BothPos:    addi $sp, $sp, -16      # Stack space for $ra, $a0, $a1, $v0
+            sw $ra, 12($sp)          
+            sw $a1, 8($sp)
+            sw $a0, 4($sp)
+            
+            addi $a0, $a0, -1       # x - 1
+            jal Recursion           # Recursion (x-1, y)
+            sw $v0, 0($sp)       
+            
+            lw $a0, 4($sp)
+            lw $a1, 8($sp)
+            addi $a1, $a1, -1       # y - 1
+            jal Recursion           # Recursion (x, y-1)
+            
+            lw $t8, 0($sp)          # Retrieve 1st recursion result
+            add $v0, $v0, $t8       # Sum of the 2 recursions
+            
+            lw $ra, 12($sp)          # Retrieve return address
+            addi $sp, $sp, 16
+            jr $ra
+            
+Exit:
