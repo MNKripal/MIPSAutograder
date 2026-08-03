@@ -1,0 +1,66 @@
+# Question 2 – MIPS Autograder
+
+# Overview
+
+This folder contains the Gradescope autograder for Zylab2: Arrays and Duplicate Removal of the MIPS programming assignments.
+
+The autograder executes both the instructor's reference solution and the student's submission using the SPIM simulator. The resulting array size and array contents are compared to determine correctness.
+
+# Grading Process
+
+For each hidden test case:
+
+1. Initialize array `Array` in memory and registers `$s0`, `$s1`.
+2. Execute the instructor's reference MIPS solution.
+3. Execute the student's MIPS solution.
+4. Compare the resulting values:
+   - `$s1` (new size of the array after duplicate removal)
+   - Every remaining element in the array
+5. Award 1 point if the student's output matches the instructor's output.
+
+The total score is 4 points.
+
+# Hidden Test Cases
+
+| Test Case | $s0 (Base) | $s1 (Size) | Input Array |
+|-----------|------------|------------|-------------|
+| 1         | 4000       | 10         | `[4, 8, -13, 8, -13, -13, 0, 8, 4, 0]` |
+| 2         | 13804      | 4          | `[-8, -4, 4, 8]` |
+| 3         | 8016       | 9          | `[-50, 80, 100, 0, -80, -50, -100, 0, 100]` |
+| 4         | 10000      | 5          | `[230, 230, 230, 230, 230]` |
+
+# Files
+
+| File | Description |
+|------|-------------|
+| `grader.py` | Main Gradescope autograder script |
+| `setup.sh` | Installs SPIM and required dependencies |
+| `run_autograder` | Launches the autograder inside Gradescope |
+| `MIPSSolution` | Instructor's reference solution |
+
+# Student Submission Requirements
+
+Students should submit **only the MIPS instruction sequence**.
+
+Do not include:
+
+- `.data`
+- `.text`
+- `.globl main`
+- `main:`
+
+The autograder automatically generates the complete MIPS program before execution.
+
+Students should assume that:
+
+- `$s0` contains the base address of the array.
+- `$s1` contains the initial size of the array.
+
+---
+
+# Notes
+
+- The autograder uses SPIM to execute MIPS programs.
+- The instructor's solution is used as the grading reference.
+- The student's output is compared against the instructor's output for each hidden test case.
+- Each hidden test case is worth **1 point**.

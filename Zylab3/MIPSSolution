@@ -1,0 +1,33 @@
+# A - $s0, B - $s2, n1 - $s1, n2 - $s3
+
+Main: addi $t1, $zero, 1   # 0th element
+      sw $t1, 0($s2)       # Write to B[0]
+Init: addi $s0, $s0, 4     # 1st element address
+For:  bge $t1, $s1, End    # if $t1 (=j) >= $s1 (=n1) end
+      addi $s3, $t1, 0     # n2 = j
+C_exp:lw $a0, 0($s0)       # jth element
+      addi $a1, $t1, 0     # argument 2 for exponent 
+      jal F_exp
+C_App:addi $a2, $v0, 0     # arg 3 for append
+      addi $a1, $s3, 0     # arg 2 for append
+      addi $a0, $s2, 0     # arg 1 for append
+      jal F_app
+j_up: addi $t1, $t1, 1     # j++
+      addi $s0, $s0, 4     # update address of jth element
+      j For
+End:  addi $s3, $s3, 1     # n2++
+      j Exit
+F_exp:addi $v0, $a0, 0     # exp = x
+      addi $t8, $zero, 1      # j = 1
+loop: bge $t8, $a1, Ret1   # j >= y return
+      mult $v0, $a0        # exp*x
+      mflo $v0
+l_up: addi $t8, $t8, 1     # j++
+      j loop
+Ret1: jr $ra               # Return from exp
+F_app:sll $t9, $a1, 2      # n2 *4
+      add $t9, $t9, $a0    # addr of B[n2]
+      sw $a2, 0($t9)       # write B[n2]
+Ret2: jr $ra
+Exit:
+      
