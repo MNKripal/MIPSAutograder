@@ -16,7 +16,7 @@ PROF_SOLUTION = """\
 lw $t0, 0($s0)
 lw $t1, 4($s0)
 
-multu $t0, $t1
+mult $t0, $t1
 mflo $t2
 mfhi $t3
 
