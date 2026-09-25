@@ -1,0 +1,50 @@
+# Zylab7 – Prefix Sums with a Procedure Call
+
+This is the Gradescope autograder for Zylab7. Students write a `main` that fills array `B` so that `B[i]` is the sum of the first `i+1` elements of `A`, and an `nSum` function that computes each of those sums. The point of the lab is the procedure call, so a plain loop that skips `nSum` scores zero.
+
+## How it grades
+
+The grader builds array `A` in memory, puts its address in `$s0`, the address of `B` in `$s1` and the length `n` in `$s2`, then runs the instructor's solution and the student's submission through the same harness. After each run it reads back the `n` words at `B`'s original address and compares them.
+
+There are 4 hidden tests, 1 point each. Only the contents of `B` are checked.
+
+| Test | A addr | B addr | n  | A                                     | Expected B                                              |
+|------|-------:|-------:|---:|---------------------------------------|---------------------------------------------------------|
+| 1    | 4000   | 8000   | 5  | 10, 5, -5, -2, 0                      | 10, 15, 10, 8, 8                                        |
+| 2    | 13800  | 13804  | 1  | -8                                    | -8                                                      |
+| 3    | 8040   | 8000   | 10 | -5, 8, 4, -6, 6, 0, -3, -2, 2, -2     | -5, 3, 7, 1, 7, 7, 4, 2, 4, 2                           |
+| 4    | 2648   | 2648   | 8  | -80, -40, 25, 20, -15, 10, -8, -4     | -80, -120, -175, -355, -745, -1465, -2948, -5892        |
+
+Test 4 has `B` at the same address as `A`, so each store into `B` overwrites an element of `A`. The assignment says to use the updated values in that case, which is what the instructor's solution does since `nSum` reads from memory every time. A submission that caches `A` up front will get a different answer here.
+
+## Addresses
+
+Students work with nominal addresses like 4000 and 8000. Those aren't valid in SPIM, so the harness maps both arrays into a 20000-byte buffer while keeping the same distance between them. Adjacent or overlapping arrays behave exactly as they would at the real addresses.
+
+Right before the student's code runs the harness also zeroes `$t0`–`$t9`, `$a0`–`$a3`, `$v0` and `$v1`. The array setup leaves values in the temporaries otherwise, and code that assumes a fresh simulator (the instructor's solution included) would misbehave.
+
+## Assignment rule
+
+If there is no `jal` in the submission, the autograder sets all four tests to 0. Comments are ignored for this check.
+
+The student sees a one-line note on each test saying the score was changed because of an assignment rule. The reason is written to a separate "Instructor Notes" test entry that is hidden from students and shown with a red banner. It's green when the check passes. The same text is printed at the top of the hidden stdout log.
+
+## Files
+
+- `grader.py` – the autograder
+- `MIPSSolution.asm` – instructor's reference solution
+- `setup.sh` – installs SPIM inside the Gradescope container
+- `run_autograder` – entry point Gradescope calls
+
+## What students should submit
+
+Just the MIPS instructions. `$s0`, `$s1` and `$s2` are already set and `A` is already in memory. The harness provides `.data`, `.text`, `.globl main` and `main:` and strips them from the submission if present, so a full QtSpim program still grades. A `Main:` label with a capital M is left alone.
+
+Two things that will break a submission:
+
+- Using `$at`. SPIM reserves it for the assembler. Use any other register.
+- Ending with an exit syscall. The harness prints `B` after the student's code, so exiting early means nothing is printed.
+
+## Testing locally
+
+Make a `submission` folder next to `grader.py`, put a `.asm` file in it and run `python3 grader.py`. Results land in `./results/results.json` and the instructor log prints to the terminal. Needs `spim` installed.

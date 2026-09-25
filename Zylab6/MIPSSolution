@@ -1,0 +1,35 @@
+# Assign Arguments
+Main: addi $a0, $s0, 0
+      addi $a1, $s1, 0
+      addi $a2, $s2, 0
+      slt $s3, $a1, $zero  # $s3 = 1, if md < 0 
+      beq $s3, $zero, m    # if md >= 0 skip sub1
+sub1: sub $a1, $zero, $a1
+m:    slt $s4, $a2, $zero  # $s4 = 1, if m < 0
+      beq $s4, $zero, Call # if m >= 0 skip sub2
+sub2: sub $a2, $zero, $a2
+Call: addi $a3, $zero, 16  # assign n = 16
+      jal Pdt              # First Recursive Call
+      beq $s3, $s4, same   # if operands have same sign skip neg
+      sub $s0, $zero, $v0
+      j Exit
+same: addi $s0, $v0, 0     # Product = return value
+      j Exit
+      
+Pdt:  bne $a3, $zero, Next # if n = 0, return
+      addi $v0, $a0, 0      # return p
+      jr $ra
+Next: addi $sp, $sp, -4    # Use stack
+      sw $ra, 0($sp)       # Store $ra
+      andi $t0, $a2, 1     # m_0
+      beq $t0, $zero, task # if LSb == 0, skip p+=md 
+      add $a0, $a0, $a1    # p = p + md
+task: sll $a1, $a1, 1      # md << 1
+      srl $a2, $a2, 1      # m >> 1
+      addi $a3, $a3, -1    # n--
+      jal Pdt
+Ret:  lw $ra, 0($sp)       # retrieve $ra
+      addi $sp, $sp, 4     # update $sp
+      jr $ra
+   
+Exit:

@@ -1,0 +1,49 @@
+# Zylab6 – Shift-and-Add Recursive Multiplication
+
+This is the Gradescope autograder for Zylab6. Students write a `main` that sets up the arguments and a recursive function that multiplies two numbers using the shift-and-add algorithm. No `mult` or `mul` allowed.
+
+## How it grades
+
+The grader wraps the instructor's solution and the student's submission in the same test harness, runs both in SPIM, and compares the final values of `$s0`, `$s1` and `$s2`. `$s0` holds the product, `$s1` the multiplicand and `$s2` the multiplier.
+
+There are 4 hidden tests, 1 point each. A test passes only if all three registers match the instructor's run.
+
+| Test | $s1 (multiplicand) | $s2 (multiplier) | Expected $s0 |
+|------|-------------------:|-----------------:|-------------:|
+| 1    | 8000               | 15000            | 120000000    |
+| 2    | -230               | 11012            | -2532760     |
+| 3    | -23011             | -23012           | 529529132    |
+| 4    | 23012              | -11023           | -253661276   |
+
+`$s0` starts at 0 in every test.
+
+## Assignment rules
+
+The assignment has two rules that the autograder enforces on its own:
+
+- If the code uses `mult`, `mul`, `multu` or `mulu` anywhere, all four tests are set to 0.
+- If there is no `jal` in the code (so no recursive procedure calls), every test score is cut in half.
+
+Comments are ignored when checking for these, so a comment that mentions `mult` won't trigger anything.
+
+When a rule is broken the student just sees a one-line message on each test saying the score was changed because of an assignment rule. The actual reason shows up in a separate test entry called "Instructor Notes", which is hidden from students and rendered with a red banner so it's hard to miss. If nothing was broken that entry is green. The same info is also printed at the top of the hidden stdout log.
+
+## Files
+
+- `grader.py` – the autograder
+- `MIPSSolution` – instructor's reference solution
+- `setup.sh` – installs SPIM inside the Gradescope container
+- `run_autograder` – entry point Gradescope calls
+
+## What students should submit
+
+Just the MIPS instructions. The harness already provides `.data`, `.text`, `.globl main` and `main:`, and it strips those out of the submission if a student includes them anyway, so a full program that runs in QtSpim will still grade fine. A student's own `Main:` label (capital M) is not touched since SPIM labels are case-sensitive.
+
+Two things that will break a submission:
+
+- Using `$at`. SPIM reserves it for the assembler and refuses to assemble code that names it directly. Use any other register.
+- Ending the code with an exit syscall (`li $v0, 10` / `syscall`). The harness prints the registers after the student's code runs, so exiting early means nothing gets printed and the test fails.
+
+## Testing locally
+
+Make a `submission` folder next to `grader.py`, drop a `.asm` file in it and run `python3 grader.py`. Results go to `./results/results.json` and the instructor log prints to the terminal. You need `spim` on your path.

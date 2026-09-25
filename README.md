@@ -34,7 +34,7 @@ graph TD
 
 ## 2. Directory & File Organization
 
-The repository is structured by assignment folders (`Zylab1` through `Zylab5`). Each folder is independent and contains the following files:
+The repository is structured by assignment folders (`Zylab1` through `Zylab7`). Each folder is independent and contains the following files:
 
 | File Name | Role |
 | :--- | :--- |
